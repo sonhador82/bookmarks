@@ -1,0 +1,17 @@
+version: "3"
+
+services:
+  mongo:
+    image: mongo:5.0.1
+    ports:
+    - 27017:27017
+
+  backend:
+    image: backend
+    build:
+      dockerfile: ./backend/Dockerfile
+      context: .
+    environment:
+      MONGO_HOST: mongo
+    ports:
+    - 8080:8080

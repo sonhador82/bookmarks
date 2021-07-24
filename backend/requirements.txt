@@ -1,0 +1,3 @@
+aiohttp==3.7.4.post0
+aiohttp-cors==0.7.0
+motor==2.5.0
