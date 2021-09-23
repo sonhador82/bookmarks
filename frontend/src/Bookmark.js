@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { Formik, Field, Form, FieldArray } from 'formik';
 import axios from "axios";
 
-const BookmarkForm = () => (
+function BookmarkForm() {
+  const [status, setStatus] = useState("test")
+
+  return (
         <div>
           <h1>Sign Up</h1>
           <Formik
@@ -13,13 +16,11 @@ const BookmarkForm = () => (
               tags: ''
             }}
             onSubmit={async (values) => {
-              await new Promise((r) => setTimeout(r, 500));
               console.log(values)
               axios.post('http://localhost:8080/bookmark', values)
-                .then( (response) => { console.log(response) })
-                .catch( (error) => { console.log(error)} )
-  //            alert(JSON.stringify(values, null, 2));
-            }}
+                .then( (response) => { setStatus(response.statusText) })
+                .catch( (error) => { setStatus(error.toString())} )
+              }}
           >
             <Form>
               <label htmlFor="url">Url</label>
@@ -37,7 +38,10 @@ const BookmarkForm = () => (
               <button type="submit">Submit</button>
             </Form>
           </Formik>
+          <div>Status: {status}</div>
         </div>
-)
+        
+  )
+}
 
 export default BookmarkForm
