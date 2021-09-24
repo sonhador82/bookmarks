@@ -51,7 +51,6 @@ class LoginForm extends React.Component {
                             <Button variant="primary" type="submit">Login</Button>
                         </Form>
             </Container>
-
         )
     }
 }

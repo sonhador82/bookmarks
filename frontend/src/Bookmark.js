@@ -12,6 +12,7 @@ function BookmarkForm() {
             initialValues={{
               url: '',
               title: '',
+              description: '',
               category: '',
               tags: ''
             }}
@@ -28,11 +29,14 @@ function BookmarkForm() {
       
               <label htmlFor="title">Title</label>
               <Field id="title" name="title" placeholder="Title" />
-      
+
+              <label htmlFor="description">Description</label>
+              <Field id="description" name="description" placeholder="Description" />
+
               <label htmlFor="category">Category</label>
               <Field id="category" name="category" placeholder="Category" />
 
-              <label htmlFor="tags">Category</label>
+              <label htmlFor="tags">Tags (w comma)</label>
               <Field id="tags" name="tags" placeholder="tags" />
 
               <button type="submit">Submit</button>

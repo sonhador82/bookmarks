@@ -4,3 +4,4 @@ motor==2.5.0
 aiohttp-session==2.9.0
 cryptography==3.4.8
 aioredis==2.0.0
+marshmallow==3.13.0

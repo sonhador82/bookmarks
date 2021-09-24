@@ -1,4 +1,3 @@
-import base64
 import logging
 
 import aioredis
@@ -9,24 +8,21 @@ from aiohttp_session.redis_storage import RedisStorage
 from aiohttp_session import SimpleCookieStorage
 import aiohttp_cors
 
-import motor.motor_asyncio
-
-from cryptography import fernet
-
-client = motor.motor_asyncio.AsyncIOMotorClient()
-db = client.sandbox
-collection = db.bookmarks
+from data.mongo import MongoStorage
+from data.bookmark import BookmarkSchema
 
 logging.basicConfig(level=logging.DEBUG)
 
+MONGO_URL="mongodb://localhost"
 
 async def bookmark_handler(request: Request):
-    global collection
     data = await request.json()
     tags = data['tags'].split(',')
     data['tags'] = tags
-    await collection.insert_one(data)
-    return web.json_response({"status": "ok"})
+    storage = MongoStorage(MONGO_URL, 'BookMark', 'bookmarks')
+    result = await storage.insertBookmark(BookmarkSchema().load(data))
+    print(result)
+    return web.json_response({"status": "ok", "id": result})
 
 
 async def show_bookmarks(request: Request):
@@ -60,7 +56,7 @@ async def make_app():
     app = web.Application()
     app.add_routes(
         [
-            web.get('/bookmark', show_bookmarks),
+            web.post('/bookmark', bookmark_handler),
             web.post('/login', login_handler)
         ]
     )

@@ -4,10 +4,12 @@ import './index.css';
 import reportWebVitals from './reportWebVitals';
 
 import LoginForm from "./Login"
+import BookmarkForm from './Bookmark'
 
 ReactDOM.render(
   <React.StrictMode>
     <LoginForm />
+    <BookmarkForm />
   </React.StrictMode>,
   document.getElementById('root')
 );
