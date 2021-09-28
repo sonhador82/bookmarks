@@ -3,13 +3,19 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
 
-import LoginForm from "./Login"
-import BookmarkForm from './Bookmark'
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import Routes from './routes';
+import NavigationBar from './views/pages/NavigationBar';
+import SecurityProvider from './SecurityProvider';
 
 ReactDOM.render(
   <React.StrictMode>
-    <LoginForm />
-    <BookmarkForm />
+    <BrowserRouter>
+      <SecurityProvider>
+        <NavigationBar />
+        <Routes />
+      </SecurityProvider>
+    </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root')
 );

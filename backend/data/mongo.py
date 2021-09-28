@@ -1,7 +1,11 @@
 import asyncio
-from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorCollection
+import json
+import math
 
-from .bookmark import Bookmark, BookmarkSchema
+from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorCollection, AsyncIOMotorCursor
+from bson import json_util
+
+from bookmark import Bookmark, BookmarkSchema
 
 
 class MongoStorage:
@@ -19,16 +23,41 @@ class MongoStorage:
         data = await self.collection.find_one({'_id': b_id})
         return BookmarkSchema().load(data)
 
+    async def getCursor(self) -> AsyncIOMotorCursor:
+        return self.collection.find()
+
+    async def getItems(self, page_num: int, limit: int):
+        count = await self.collection.estimated_document_count()
+        pages = math.ceil(count / limit)
+        skip = page_num*limit
+        cursor = self.collection.find()
+        cursor.skip(skip)
+        cursor.limit(limit)
+
+        items = json_util.dumps(await cursor.to_list(None))
+
+        return json.dumps({"pages": pages, "page": page_num, "items": json.loads(items)})
+
 
 #todo refactor to test
 async def main():
-    m = MongoStorage("mongodb://localhost", "bookmarks")
-    b = Bookmark("My Title", "https://ya.ru", "Dummy decs", "devops", ["devops", "ci/cd"])
-    result = await m.insertBookmark(b)
-    print(result)
-    print(f'result id: {result}')
-    result2 = await m.findBookmarkById(result)
-    print(f'result2: {result2}')
+    m = MongoStorage("mongodb://localhost", "BookMark", "bookmarks")
+    print(await m.getItems(2, 10))
+
+
+    # cur: AsyncIOMotorCursor = await m.getCursor()
+    # print((await cur.to_list(None))[0:2])
+    # cur.rewind()
+    # cur.limit(5)
+    # cur.skip(0)
+    # print(await cur.to_list(None))
+
+    # b = Bookmark("My Title", "https://ya.ru", "Dummy decs", "devops", ["devops", "ci/cd"])
+    # result = await m.insertBookmark(b)
+    # print(result)
+    # print(f'result id: {result}')
+    # result2 = await m.findBookmarkById(result)
+    # print(f'result2: {result2}')
 
 
 if __name__ == '__main__':
