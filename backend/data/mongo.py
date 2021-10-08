@@ -5,7 +5,8 @@ import math
 from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorCollection, AsyncIOMotorCursor
 from bson import json_util
 
-from bookmark import Bookmark, BookmarkSchema
+from .bookmark import Bookmark, BookmarkSchema
+from .auth import User, UserJsonEncoder
 
 
 class MongoStorage:
@@ -13,6 +14,10 @@ class MongoStorage:
         self.client: AsyncIOMotorClient = AsyncIOMotorClient(mongo_url)
         self.db = getattr(self.client, database)
         self.collection: AsyncIOMotorCollection = getattr(self.db, collection)
+        self.users: AsyncIOMotorCollection = getattr(self.db, "users")
+
+    #!TODO создавать индекс
+    #self.users.create_index({"email"}, {"unique": True})
 
     async def insertBookmark(self, bookmark: Bookmark) -> str:
         data = BookmarkSchema().dump(bookmark)
@@ -39,26 +44,14 @@ class MongoStorage:
         return json.dumps({"pages": pages, "page": page_num, "items": json.loads(items)})
 
 
-#todo refactor to test
-async def main():
-    m = MongoStorage("mongodb://localhost", "BookMark", "bookmarks")
-    print(await m.getItems(2, 10))
+## User managment
+    async def insert_user(self, user: User) -> str:
+        data = json.loads(json.dumps(user, cls=UserJsonEncoder))
+        result = await self.users.insert_one(data)
+        return str(result.inserted_id)
 
-
-    # cur: AsyncIOMotorCursor = await m.getCursor()
-    # print((await cur.to_list(None))[0:2])
-    # cur.rewind()
-    # cur.limit(5)
-    # cur.skip(0)
-    # print(await cur.to_list(None))
-
-    # b = Bookmark("My Title", "https://ya.ru", "Dummy decs", "devops", ["devops", "ci/cd"])
-    # result = await m.insertBookmark(b)
-    # print(result)
-    # print(f'result id: {result}')
-    # result2 = await m.findBookmarkById(result)
-    # print(f'result2: {result2}')
-
-
-if __name__ == '__main__':
-    asyncio.run(main(), debug=True)
+    async def find_user_by_email(self, user_email) -> User:
+        data = await self.users.find_one({'email': user_email})
+        if not data:
+            raise Exception("User not found")
+        return User(data['email'], data['full_name'], data['password'], data['is_admin'])

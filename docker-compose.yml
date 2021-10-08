@@ -10,13 +10,13 @@ services:
     image: redis:5.0
     ports:
     - 6379:6379
-
-  backend:
-    image: backend
-    build:
-      dockerfile: ./backend/Dockerfile
-      context: .
-    environment:
-      MONGO_HOST: mongo
-    ports:
-    - 8080:8080
+#
+#  backend:
+#    image: backend
+#    build:
+#      dockerfile: ./backend/Dockerfile
+#      context: .
+#    environment:
+#      MONGO_HOST: mongo
+#    ports:
+#    - 8080:8080
