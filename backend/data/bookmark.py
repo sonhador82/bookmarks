@@ -13,6 +13,9 @@ class Bookmark:
     def __repr__(self):
         return f'<Bookmark id={self._id} title={self.title} >'
 
+    def __eq__(self, other):
+        return self._id == other._id
+
 
 class BookmarkSchema(Schema):
     _id = fields.Raw(load_only=True)
