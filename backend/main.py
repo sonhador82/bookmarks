@@ -17,20 +17,6 @@ logging.basicConfig(level=logging.DEBUG)
 MONGO_URL = "mongodb://localhost"
 
 
-# async def sandbox_handler(request: Request):
-#     # session = await get_session(request)
-#     # session["puss"] = "test"
-#     response = web.HTTPOk()
-#     data = await request.json()
-#
-#     if await check_credentials(storage, data['email'], data['password']):
-#         await remember(request, response, data['email'])
-#         return web.HTTPFound("/")
-#
-#     return web.Response(text="hello world")
-#     #return web.json_response(status=200, data={"status": "ok", "session": session.__dict__})
-
-
 async def create_app():
     redis_pool = await aioredis.create_pool('redis://127.0.0.1:6379')
     session_storage = RedisStorage(redis_pool)
@@ -42,9 +28,11 @@ async def create_app():
     app.add_routes(
         [
             web.post('/auth/signin', authHandler.signin),
+            web.get('/auth/signout', authHandler.signout),
             web.get('/bookmark/{b_id:\w+}', bookMarkHandler.get),
             web.get('/bookmark', bookMarkHandler.list),
             web.post('/bookmark', bookMarkHandler.post),
+            web.get('/sandbox', bookMarkHandler.sandbox)
         ]
     )
 

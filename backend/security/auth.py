@@ -9,5 +9,6 @@ class AuthZ(AbstractAuthorizationPolicy):
         pass
 
     async def authorized_userid(self, identity):
-        # вернуть инфу по юзеру из базы - identity - логин/первичный ключ
-        pass
+        user_id = await self.storage.find_user_by_email(identity)
+        if user_id:
+            return user_id.email

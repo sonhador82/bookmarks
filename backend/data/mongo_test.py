@@ -32,7 +32,7 @@ async def test_check_creds(mongo_test):
 
 @pytest.mark.asyncio
 async def test_create_bookmark(mongo_test):
-    b1 = Bookmark("Bookmark Title", "http://somedomain.com", "A simple desc", "devops", ("Some Tag1", "Some Tag2"))
+    b1 = Bookmark("Bookmark Title", "http://somedomain.com", "A simple desc", "devops", ("Some Tag1", "Some Tag2"), 'userid1')
     result_id = await mongo_test.insert_bookmark(b1)
     b1._id = result_id
     b2 = await mongo_test.find_bookmark_by_id(result_id)

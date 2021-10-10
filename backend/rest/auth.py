@@ -1,10 +1,9 @@
 
 from aiohttp import web, log
-from aiohttp_session import get_session
-from aiohttp_security import remember
+from aiohttp_security import remember, forget
 
-from data.mongo import MongoStorage
 from data.auth import check_credentials
+from data.mongo import MongoStorage
 
 
 class AuthHandler:
@@ -12,8 +11,6 @@ class AuthHandler:
         self.storage = data_storage
 
     async def signin(self, request: web.Request):
-        # session = await get_session(request)
-        # print(session)
         response = web.HTTPFound('/')
         data = await request.json()
         log.web_logger.debug(data)
@@ -22,10 +19,7 @@ class AuthHandler:
             return web.HTTPFound("/")
         return web.HTTPForbidden()
 
-
-    # def signout(self, request: web.Request):
-    #     pass
-    #
-    # async def signup_handler(request: Request):
-    #     await check_permission(request, 'admin')
-    #     return web.json_response(status=200, data={"created": "ok"})
+    async def signout(self, request: web.Request):
+        resp = web.Response()
+        await forget(request, resp)
+        return resp
