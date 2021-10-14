@@ -1,20 +1,21 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import reportWebVitals from './reportWebVitals';
+import React from 'react'
+import ReactDOM from 'react-dom'
+import './index.css'
+import reportWebVitals from './reportWebVitals'
 
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
-import Routes from './routes';
-import NavigationBar from './views/pages/NavigationBar';
-import SecurityProvider from './SecurityProvider';
+import { BrowserRouter, Route, Switch } from 'react-router-dom'
+import Routes from './routes'
+import NavigationBar from './views/pages/NavigationBar'
+import { ProvideAuth } from './hooks/UseAuth'
 
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
-      <SecurityProvider>
+      <ProvideAuth>
         <NavigationBar />
         <Routes />
-      </SecurityProvider>
+
+      </ProvideAuth>
     </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root')

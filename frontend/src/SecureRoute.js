@@ -1,12 +1,12 @@
 import { Route } from "react-router-dom"
-import useSecurity from "./UseSecurity"
+import { useAuth } from "./hooks/UseAuth"
 import SignIn from "./views/pages/SignIn"
 
 const SecureRoute = (props) => {
-    const { loggedIn } = useSecurity()
+    const { user } = useAuth()
 
     return (
-        <Route {...props}>{ loggedIn ? props.children : <SignIn /> }</Route>
+        <Route {...props}>{ user ? props.children : <SignIn /> }</Route>
     )
 }
 

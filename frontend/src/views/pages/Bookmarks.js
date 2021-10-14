@@ -7,33 +7,20 @@ import BACKEND_URL from "../../Config"
 
 const ShowBookmarks = () => {
     const [bookmarks, setBookmarks] = useState([]);
-    async function getBookmarks() {
+    const fetchBookmarks = async () => {
         try {
             const resp = await axios.get(`${BACKEND_URL}/api/bookmarks`, { withCredentials: true })
             if (resp.status === 200) {
-                return resp.data
+                setBookmarks(resp.data)
             }            
         } catch (error) {
             console.log(error)
         }
     }
 
-    const fetchBookmarks = async () => {
-        const data = await getBookmarks()
-        setBookmarks(data)
-    }
-
     useEffect(() => {
         fetchBookmarks()
     }, [])
-
-    const MakeBookmarksList = () => {
-        return (
-            bookmarks.map(function (item) {
-                <p>{item.title}</p>
-            })
-        )
-    }
 
     return (
         <Container>
