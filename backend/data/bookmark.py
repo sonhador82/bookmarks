@@ -19,7 +19,7 @@ class Bookmark:
 
 
 class BookmarkSchema(Schema):
-    _id = fields.Str(load_only=True)
+    _id = fields.Str()
     title = fields.Str()
     url = fields.URL()
     description = fields.Str()
@@ -29,7 +29,8 @@ class BookmarkSchema(Schema):
 
     @pre_load
     def convert_object_id(self, in_data, **kwargs):
-        in_data['_id'] = str(in_data['_id'])
+        if '_id' in in_data:
+            in_data['_id'] = str(in_data['_id'])
         return in_data
 
     @post_load

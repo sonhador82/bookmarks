@@ -14,7 +14,7 @@ from .auth import User, UserJsonEncoder
 class Storage(abc.ABC):
     ### bookmarks
     @abc.abstractmethod
-    async def find_bookmark_by_id(self, b_id: str) -> Bookmark:
+    async def find_bookmark_by_id(self, user_id: str, b_id: str) -> Bookmark:
         pass
 
     @abc.abstractmethod
@@ -41,11 +41,13 @@ class MongoStorage(Storage):
 
     async def insert_bookmark(self, bookmark: Bookmark) -> str:
         data = BookmarkSchema().dump(bookmark)
+        if '_id' in data:
+            del(data['_id'])
         result = await self.bookmarks.insert_one(data)
         return str(result.inserted_id)
 
-    async def find_bookmark_by_id(self, b_id) -> Bookmark:
-        data = await self.bookmarks.find_one({'_id': ObjectId(b_id)})
+    async def find_bookmark_by_id(self, user_id, b_id) -> Bookmark:
+        data = await self.bookmarks.find_one({'user_id': user_id, '_id': ObjectId(b_id)})
         return BookmarkSchema().load(data)
 
     async def find_bookmarks_for_user(self, user_id) -> List[Bookmark]:

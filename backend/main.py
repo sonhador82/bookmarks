@@ -29,9 +29,9 @@ async def create_app():
         [
             web.post('/auth/signin', authHandler.signin),
             web.get('/auth/signout', authHandler.signout),
-            web.get('/bookmark/{b_id:\w+}', bookMarkHandler.get),
-            web.get('/bookmark', bookMarkHandler.list),
-            web.post('/bookmark', bookMarkHandler.post),
+            web.get('/api/bookmarks/{b_id:\w+}', bookMarkHandler.get),
+            web.get('/api/bookmarks', bookMarkHandler.list),
+            web.post('/api/bookmarks', bookMarkHandler.create),
             web.get('/sandbox', bookMarkHandler.sandbox)
         ]
     )

@@ -15,13 +15,12 @@ class BookmarkHandler:
         return web.json_response(BookmarkSchema(many=True).dump(data))
 
     async def get(self, request: web.Request):
-        # TODO зарефачить чтобы только для определенного пользователя
-        _ = await check_authorized(request)
+        user_id = await check_authorized(request)
         b_id = request.match_info['b_id']
-        data = await self.storage.find_bookmark_by_id(b_id)
+        data = await self.storage.find_bookmark_by_id(user_id, b_id)
         return web.json_response(BookmarkSchema().dump(data))
 
-    async def post(self, request):
+    async def create(self, request):
         user_id = await check_authorized(request)
         data = await request.json()
         data['user_id'] = user_id
