@@ -6,6 +6,15 @@ services:
     ports:
     - 27017:27017
 
+  mongo-express:
+    image: mongo-express:1.0.0-alpha
+    environment:
+      ME_CONFIG_MONGODB_SERVER: mongo
+    ports:
+    - 8081:8081
+    depends_on:
+      - mongo
+
   redis:
     image: redis:5.0
     ports:
